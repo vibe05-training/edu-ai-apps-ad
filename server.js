@@ -5,14 +5,14 @@ import { pathToFileURL } from 'node:url';
 import generate from './api/generate.js';
 
 const staticFiles = new Map([
-  ['/', ['index.html', 'text/html; charset=utf-8']],
-  ['/index.html', ['index.html', 'text/html; charset=utf-8']],
-  ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
-  ['/validation.js', ['validation.js', 'text/javascript; charset=utf-8']],
+  ['/', [new URL('./public/index.html', import.meta.url), 'text/html; charset=utf-8']],
+  ['/index.html', [new URL('./public/index.html', import.meta.url), 'text/html; charset=utf-8']],
+  ['/app.js', [new URL('./public/app.js', import.meta.url), 'text/javascript; charset=utf-8']],
+  ['/validation.js', [new URL('./public/validation.js', import.meta.url), 'text/javascript; charset=utf-8']],
 ]);
 
-export function createLocalServer(handler = generate) {
-  return createServer(async (req, res) => {
+function createRequestHandler(handler = generate) {
+  return async (req, res) => {
     const pathname = new URL(req.url, 'http://localhost').pathname;
     if (pathname === '/api/generate') return handler(req, res);
     const file = staticFiles.get(pathname);
@@ -25,14 +25,20 @@ export function createLocalServer(handler = generate) {
       return res.end();
     }
     try {
-      const content = await readFile(new URL(`./public/${file[0]}`, import.meta.url));
+      const content = await readFile(file[0]);
       res.writeHead(200, { 'Content-Type': file[1], 'X-Content-Type-Options': 'nosniff' });
       return res.end(req.method === 'HEAD' ? undefined : content);
     } catch {
       res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
       return res.end('화면 파일을 읽지 못했습니다.');
     }
-  });
+  };
+}
+
+export default createRequestHandler();
+
+export function createLocalServer(handler = generate) {
+  return createServer(createRequestHandler(handler));
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

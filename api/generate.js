@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { validateRecommendation } from '../public/validation.js';
 
 const MAX_BODY_BYTES = 16 * 1024;
@@ -79,7 +80,7 @@ export function createGenerateHandler({ env = process.env, fetchImpl = globalThi
 
     let instruction;
     try {
-      instruction = await readFile(new URL('./시스템 프롬프트.txt', import.meta.url), 'utf8');
+      instruction = await readFile(join(process.cwd(), 'api', '시스템 프롬프트.txt'), 'utf8');
       if (!instruction.trim()) throw new Error('시스템 프롬프트가 비어 있습니다.');
     } catch {
       console.error('시스템 프롬프트를 읽지 못했습니다.');

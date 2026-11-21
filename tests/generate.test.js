@@ -1,8 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { createServer } from 'node:http';
 import { createGenerateHandler } from '../api/generate.js';
-import { createLocalServer } from '../server.js';
+import handler, { createLocalServer } from '../server.js';
 
 const exampleInput = {
   assignment: '정수 목록에서 중복을 제거하고 오름차순으로 출력하기',
@@ -33,6 +34,27 @@ function post(base, body) {
     body: typeof body === 'string' ? body : JSON.stringify(body),
   });
 }
+
+test('기본 내보내기 요청 처리기가 화면과 API 경로를 제공한다', async (t) => {
+  assert.equal(typeof handler, 'function');
+  const server = createServer(handler);
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve())));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  for (const [path, file, contentType] of [
+    ['/', 'index.html', 'text/html'],
+    ['/app.js', 'app.js', 'text/javascript'],
+    ['/validation.js', 'validation.js', 'text/javascript'],
+  ]) {
+    const response = await fetch(`${base}${path}`);
+    assert.equal(response.status, 200);
+    assert.ok(response.headers.get('content-type').startsWith(contentType));
+    assert.equal(await response.text(), await readFile(new URL(`../public/${file}`, import.meta.url), 'utf8'));
+  }
+  const invalid = await post(base, '{');
+  assert.equal(invalid.status, 400);
+  assert.ok((await invalid.json()).error);
+});
 
 test('가상 음수 사례를 AI에 전달하고 검증된 세 항목을 반환한다', async (t) => {
   let called = false;

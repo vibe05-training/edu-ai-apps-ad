@@ -1,0 +1,66 @@
+{
+  "score": 80,
+  "max_score": 100,
+  "tests": [
+    {
+      "name": "기본",
+      "score": 10,
+      "max_score": 10,
+      "reason": "통과"
+    },
+    {
+      "name": "역순",
+      "score": 10,
+      "max_score": 10,
+      "reason": "통과"
+    },
+    {
+      "name": "음수",
+      "score": 0,
+      "max_score": 10,
+      "reason": "출력 불일치"
+    },
+    {
+      "name": "전체중복",
+      "score": 10,
+      "max_score": 10,
+      "reason": "통과"
+    },
+    {
+      "name": "하나",
+      "score": 10,
+      "max_score": 10,
+      "reason": "통과"
+    },
+    {
+      "name": "빈목록",
+      "score": 0,
+      "max_score": 10,
+      "reason": "실행 오류"
+    },
+    {
+      "name": "공백",
+      "score": 10,
+      "max_score": 10,
+      "reason": "통과"
+    },
+    {
+      "name": "큰정수",
+      "score": 10,
+      "max_score": 10,
+      "reason": "통과"
+    },
+    {
+      "name": "혼합",
+      "score": 10,
+      "max_score": 10,
+      "reason": "통과"
+    },
+    {
+      "name": "이미정렬",
+      "score": 10,
+      "max_score": 10,
+      "reason": "통과"
+    }
+  ]
+}

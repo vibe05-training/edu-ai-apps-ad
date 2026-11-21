@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>보충 학습 추천</title>
+  <style>
+    body { font-family: sans-serif; line-height: 1.5; margin: 0; }
+    main { max-width: 800px; margin: auto; padding: 24px; }
+    section { padding: 16px; margin-bottom: 16px; border: 1px solid #777; }
+    textarea, button { display: block; }
+    textarea { box-sizing: border-box; width: 100%; margin-top: 8px; }
+    button { min-height: 44px; margin-top: 16px; padding: 8px 16px; }
+    :focus-visible { outline: 3px solid #005fcc; outline-offset: 2px; }
+    .error { color: #a00000; }
+    .failure { color: #a00000; font-weight: bold; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: 8px; text-align: left; border-bottom: 1px solid #777; }
+    .table-container { overflow-x: auto; }
+    #submitted-condition { white-space: pre-wrap; overflow-wrap: anywhere; }
+    @media (max-width: 768px) { main { padding: 16px; } }
+  </style>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <main>
+    <h1>채점 결과와 보충 학습 추천</h1>
+    <section aria-labelledby="results-heading">
+      <h2 id="results-heading">채점 결과</h2>
+      <label for="grade-file">grade.json 파일 선택</label>
+      <input id="grade-file" type="file" accept=".json,application/json" aria-describedby="file-note file-error">
+      <p id="file-note">채점 결과를 확인하려면 grade.json 파일을 선택해 주세요.</p>
+      <p id="file-error" class="error" role="alert"></p>
+      <button id="download-csv" type="button" disabled>CSV 내려받기</button>
+      <div id="grade-results" hidden>
+        <p id="grade-summary"></p>
+        <label><input id="failed-only" type="checkbox"> 실패한 테스트만 보기</label>
+        <div class="table-container">
+          <table>
+            <caption>테스트 결과</caption>
+            <thead>
+              <tr><th scope="col">선택</th><th scope="col">이름</th><th scope="col">점수</th><th scope="col">배점</th><th scope="col">결과</th><th scope="col">사유</th></tr>
+            </thead>
+            <tbody id="test-results"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <section aria-labelledby="recommendation-heading">
+      <h2 id="recommendation-heading">보충 학습 추천</h2>
+      <p>선택한 실패 항목: <span id="selected-test">실패 항목을 선택해 주세요.</span></p>
+      <p>과제 조건과 선택한 실패 항목의 이름·사유가 AI에 전달됩니다. 학생 식별 정보나 코드를 입력하지 마세요. 추천은 검토한 뒤 직접 전달해 주세요.</p>
+      <form id="condition-form" novalidate>
+        <label for="condition">과제 조건 (필수)</label>
+        <textarea id="condition" name="condition" rows="5" required aria-describedby="condition-error"></textarea>
+        <p id="condition-error" class="error" role="alert"></p>
+        <p id="selection-error" class="error" role="alert"></p>
+        <p id="recommendation-error" class="error" role="alert"></p>
+        <p id="recommendation-status" role="status"></p>
+        <button id="recommendation-submit" type="submit">보충 학습 추천받기</button>
+      </form>
+      <div id="confirmation" hidden>
+        <h3>확인한 입력</h3>
+        <p>실패 항목: <span id="submitted-test"></span></p>
+        <h4>과제 조건</h4>
+        <p id="submitted-condition"></p>
+        <h3>보충 학습 추천</h3>
+        <h4>피드백</h4>
+        <p id="feedback"></p>
+        <h4>힌트</h4>
+        <p id="hint"></p>
+        <h4>재도전 활동</h4>
+        <p id="activity"></p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
